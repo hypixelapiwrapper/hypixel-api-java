@@ -10,10 +10,11 @@ import java.util.UUID;
 
 public class HypixelAPI {
 
-    private static RequestFactory requestFactory;
+    private RequestFactory requestFactory;
 
-    private HypixelAPI(UUID key) {
+    private HypixelAPI(UUID key, CachingStrategy cachingStrategy) {
         requestFactory = new RequestFactory(key);
+        requestFactory.start(cachingStrategy);
     }
 
     /**
@@ -35,11 +36,10 @@ public class HypixelAPI {
      * @return the newly created instance
      */
     public static HypixelAPI create(UUID key, CachingStrategy cachingStrategy) {
-        requestFactory.start(cachingStrategy);
-        return new HypixelAPI(key);
+        return new HypixelAPI(key, cachingStrategy);
     }
 
-    public static void shutdown() throws IOException {
+    public void shutdown() throws IOException {
         requestFactory.close();
     }
 
